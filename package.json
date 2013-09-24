@@ -1,6 +1,6 @@
 {
   "name": "grunt-contextualize",
-  "description": "Replace grunt config properties with properties that sit alongside them, according to the target.",
+  "description": "Override grunt config properties.",
   "version": "0.1.0",
   "homepage": "https://github.com/osteele/grunt-contextualize",
   "author": {
