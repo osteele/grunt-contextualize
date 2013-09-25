@@ -29,16 +29,17 @@
     "test": "grunt test"
   },
   "dependencies": {
-    "coffee-script": ">= 1.6.x"
+    "coffee-script": ">= 1.6.0"
   },
   "devDependencies": {
-    "grunt": "~0.4.x",
-    "grunt-coffeelint": "0.0.x",
-    "grunt-contrib-nodeunit": "~0.2.x",
-    "load-grunt-tasks": "~0.1.x"
+    "grunt": "~0.4.1",
+    "grunt-coffeelint": "0.0.7",
+    "grunt-contrib-nodeunit": "~0.2.0",
+    "load-grunt-tasks": "~0.1.0",
+    "grunt-release": "~0.5.1"
   },
   "peerDependencies": {
-    "grunt": "~0.4.x"
+    "grunt": "~0.4.1"
   },
   "keywords": [
     "gruntplugin"
