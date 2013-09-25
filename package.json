@@ -1,7 +1,7 @@
 {
   "name": "grunt-contextualize",
   "description": "Override grunt config properties.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "homepage": "https://github.com/osteele/grunt-contextualize",
   "author": {
     "name": "Oliver Steele",

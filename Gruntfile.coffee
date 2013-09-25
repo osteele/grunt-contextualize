@@ -7,8 +7,7 @@
 module.exports = (grunt) ->
   grunt.initConfig
     coffeelint:
-      app: ['lib/*.coffee']
-      gruntfile: 'Gruntfile.coffee'
+      all: ['**/*.coffee', '!node_modules/**/*']
       options:
         max_line_length: { value: 120 }
 
@@ -18,34 +17,34 @@ module.exports = (grunt) ->
       context1:
         contextTestConfig1:
           options:
-            replaceByContextualizeConfig1: 'replaced by contextualize config from context1'
+            replaceByContextualizeConfig1: 'context1 contextualize config'
       unusedContext:
         contextTestConfig1:
           options:
             unusedContextTriesToChangeThis: 'changed'
 
     nodeunit:
-      _context1:
-        tests: 'test/context1_test.coffee'
-      _context2:
-        tests: 'test/context2_test.coffee'
-      _context3:
-        tests: 'test/context3_test.coffee'
+      context1: 'test/context1_test.coffee'
+      context2: 'test/context2_test.coffee'
+      context3: 'test/context3_test.coffee'
 
     contextTestConfig1:
       options:
         untargeted: 'original value'
+        sibling: 'replace by sibling'
+        sibling$context1: 'context1 sibling'
+        sibling$context2: 'context1 sibling'
         niece: 'replace by niece'
         cousin: 'replace by cousin'
         replaceByContextualizeConfig1: 'replace by contextualize config'
         unusedContextTriesToChangeThis: 'original value'
         _context1:
-          niece: 'replaced by niece from context1'
+          niece: 'context1 niece'
         _unusedContext:
           unusedContextTriesToChangeThis: 'changed'
       _context2:
         options:
-          cousin: 'replaced by cousin from context2'
+          cousin: 'context2 cousin'
 
     contextTestConfig2:
       target1:
@@ -53,22 +52,22 @@ module.exports = (grunt) ->
           niece: 'replace by niece'
           cousin: 'replace by cousin'
           _context1:
-            niece: 'replaced by niece from context1'
+            niece: 'context1 niece'
         _context2:
           options:
-            cousin: 'replaced by cousin from context2'
+            cousin: 'context2 cousin'
       _context3:
         target1:
           options:
-            cousin: 'replaced by cousin from context3'
+            cousin: 'context3 cousin'
 
   grunt.loadTasks 'tasks'
 
   require('load-grunt-tasks')(grunt)
 
   grunt.registerTask 'test', [
-    'contextualize:context2', 'nodeunit',
-    'contextualize:context2', 'nodeunit',
-    'contextualize:context3', 'nodeunit',
+    'contextualize:context1', 'nodeunit:context1',
+    'contextualize:context2', 'nodeunit:context2',
+    'contextualize:context3', 'nodeunit:context3',
   ]
   grunt.registerTask 'default', ['coffeelint', 'test']

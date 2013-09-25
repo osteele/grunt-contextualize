@@ -1,14 +1,18 @@
 grunt = require 'grunt'
 
 exports.contextualize =
-  adjacent_properties_override: (test) ->
-    test.equal grunt.config.get('contextTestConfig1.options.niece'), 'replaced by niece from context1'
-    test.equal grunt.config.get('contextTestConfig2.target1.options.niece'), 'replaced by niece from context1'
+  sibling_properties_override: (test) ->
+    test.equal grunt.config.get('contextTestConfig1.options.sibling'), 'context1 sibling'
+    test.done()
+
+  niece_properties_override: (test) ->
+    test.equal grunt.config.get('contextTestConfig1.options.niece'), 'context1 niece'
+    test.equal grunt.config.get('contextTestConfig2.target1.options.niece'), 'context1 niece'
     test.done()
 
   contextualize_properties_override: (test) ->
     test.equal grunt.config.get('contextTestConfig1.options.replaceByContextualizeConfig1'),
-      'replaced by contextualize config from context1'
+      'context1 contextualize config'
     test.done()
 
   untargeted_properties_arent_touched: (test) ->

@@ -1,33 +1,41 @@
 # grunt-contextualize
 
-This plugin modifies properties, in order to re-use a single set of plugin targets
-for use in multiple contexts.
+This plugin overrides configuration properties based on the current context,
+ in order to re-use a single set of plugin targets for multiple contexts.
 
 This is particularly useful when a plugin is already configured with multiple targets -- for example, to
-create one JavaScript library for the whole site, and one for each set of pages, on a complex site; and
-similarly for creating several sets of CSS files, each from multiple source files.
-In these cases, creating a distinct configuration for e.g. each combination of components (e.g. site-wide vs. home page)
-with build configurations (development vs. distribution).
+create one JavaScript or CSS file for the whole site, and one for each set of pages on a complex site.
+In these cases, creating and maintaining a distinct configuration for each combination of components
+(e.g. site-wide vs. home page) with build configurations (development vs. distribution) is burdensome.
 
-This plugin supports two modes:
+This plugin supports three modes (which can be mixed and matched):
 
-1. With a "global configuration", contexts are specified inside the `contextualize` section of the grunt configuration,
+1. **Contextual properties** override the values of properties they're next to.
+For example, `options: {pretty: true; pretty$release: false}` in a plugin configuration
+lets the corresponding plugin task see `pretty` as `true` when the `contextualize` task isn't run,
+but as `false` when the task follows the `contextualize:release` task.
+2. With **local configuration**, contexts are specified inside each plugin's configuration, alongside the values that
+are being modified. For example, `options: {pretty: true; _release: {pretty: false}}`.
+3. With a **global configuration**, contexts are specified inside the `contextualize` section of the grunt configuration,
 and their values are copied into other tasks' configurations.
-2. With "local configuration", contexts are specified inside each plugin's configuration, alongside the values that
-are being modified.
 
 See the bottom of this README for examples of using each mode to modify SASS and Jade configurations.
 
 Alternatives:
 
-* Grunt [templates](http://gruntjs.com/configuring-tasks#templates) can be used for this when the configuration property is a string. Unfortunately, templates can't
-expand into non-string values such as boolean flags.
-* Grunt [options](http://gruntjs.com/api/grunt.option) are available when `grunt.initConfig` is called, and can therefore be used *outside* of string interpolation. The uses of options requires that you specify them as command-line options, in conjunction with the task target(s), in the grunt command line. I wanted something that could be bundled into just a targets. (A target can *set* option values, but then it's too late for this to affect the initial call to `grunt.initConfig`)
-* I wanted [grunt-context](https://github.com/indieisaconcept/grunt-context) to work, but [it's defunct](https://github.com/indieisaconcept/grunt-context/issues/12), and in time-honored weekend project manner I decided I'd rather add my own with a different features than understand how to fix it.
-* [grunt-reconfigure](https://github.com/jlindsey/grunt-reconfigure) handles the "global configuration" case. I didn't discover that plugin until after I had written this one, and had already decided I liked the local configuration mode better anyway.
+* Grunt [templates](http://gruntjs.com/configuring-tasks#templates) work great when the configuration property is a string.
+Unfortunately, templates can't expand into non-string values, such as boolean flags.
+* Grunt [options](http://gruntjs.com/api/grunt.option) are available when `grunt.initConfig` is called, and can therefore be used *outside* of string interpolation.
+However, the use of options requires that you specify them as command-line options, in conjunction with the task target(s), in the grunt command line.
+Unfortunately, command-line options can't be encapsulated in the target definitions.
+(A target can set option values, but then it's too late for this to affect configuration defined in the initial call to `grunt.initConfig`.)
+* I wanted [grunt-context](https://github.com/indieisaconcept/grunt-context) to work, but [its author says it's defunct](https://github.com/indieisaconcept/grunt-context/issues/12).
+In time-honored weekend project manner, I decided I'd rather write my own with a different features than understand how to fix it.
+* [grunt-reconfigure](https://github.com/jlindsey/grunt-reconfigure) handles the "global configuration" case. I didn't discover that plugin until after I had written this one, and had decided I liked the *contextual properties*
+and *local configuration* by then.
 
 ## Getting Started
-This plugin requires Grunt `~0.4.1`
+This plugin requires Grunt `~0.4.x`
 
 If you haven't used [Grunt](http://gruntjs.com/) before, be sure to check out the [Getting Started](http://gruntjs.com/getting-started) guide, as it explains how to create a [Gruntfile](http://gruntjs.com/sample-gruntfile) as well as install and use Grunt plugins. Once you're familiar with that process, you may install this plugin with this command:
 
@@ -46,12 +54,70 @@ grunt.loadNpmTasks('grunt-contextualize');
 ### Overview
 In your project's Gruntfile, do one or more of the following.
 
-With any of these configurations,
-the `contextualize:context1` task will replace the `context1.target1.property1` by `'replacement 1`',
-and the `contextualize:context2` task will replace the `context1.target1.property1` by `'replacement 2`'.
+With any of these configurations:
 
+* The `contextualize:context1` task will replace the value of `somePlugin.options.anOption` by `1`; and
+* the `contextualize:context2` task will replace the value of `somePlugin.options.anOption` by `2`.
 
-1\. Add a section named `contextualize` to the data object passed into `grunt.initConfig()`.
+#### Contextual Properties
+Sprinkle properties named `"#{propertyName}$#{context}"` into your grunt configuration.
+
+```js
+grunt.initConfig({
+  somePlugin: {
+    options: {
+      anOption: 0
+      anOption$context1: 1
+      anOption$context2: 2
+    },
+})
+```
+
+#### Local configuration
+Add properties named e.g. `'_context1'` (`'_'` plus a context name) alongside the configuration options for *other* plugins.
+
+This context property can be inside the object that contains the properties it replaces:
+
+```js
+grunt.initConfig({
+  somePlugin: {
+    options: {
+      anOption: 0
+      _context1: {
+        anOption: 1
+      },
+      _context2: {
+        anOption: 2
+      }
+    }
+  }
+})
+```
+
+Or it can be inside a parent of this object:
+
+```js
+grunt.initConfig({
+  somePlugin: {
+    options: {
+      anOption: 0
+    },
+    _context1: {
+      options: {
+        anOption: 1
+      }
+    },
+    _context2: {
+      options: {
+        anOption: 2
+      }
+    }
+  }
+})
+```
+
+#### Global Configuration
+Add a section named `contextualize` to the data object passed into `grunt.initConfig()`.
 
 ```js
 grunt.initConfig({
@@ -73,58 +139,31 @@ grunt.initConfig({
 })
 ```
 
-2\. Add properties named e.g. `'_context1'` (`'_'` plus a context name) alongside the configuration options for *other* plugins.
-
-2a\. This context property can be inside the object that contains the properties it replaces:
-
-```js
-grunt.initConfig({
-    plugin: {
-      options: {
-        optionName: 'value'
-        _context1: {
-          optionName: 'replacement 1'
-        },
-        _context2: {
-          optionName: 'replacement 2'
-        }
-      }
-    }
-})
-```
-
-2b\. Or it can be inside a parent of this object:
-
-```js
-grunt.initConfig({
-    plugin: {
-      options: {
-        optionName: 'value'
-      },
-      _context1: {
-        options: {
-          optionName: 'replacement 1'
-        }
-      },
-      _context2: {
-        options: {
-          optionName: 'replacement 2'
-        }
-      }
-    }
-})
-```
-
 ### Options
+
+#### options.infix
+Type: `String`
+Default value: `'$'`
+
+The separator between a contextualized property and its context.
+Where contextualize looks for `'name$context1'` in the examples, a value of `'_'` for `options.prefix` would
+cause it to look for `'name_context1'` instead.
+
+`'.'` or `':'` would be nice infix values, but using them would require you to quote your property names;
+e.g. `{'name.context1': ...}` instead of `{name.context1: ...}`.
 
 #### options.prefix
 Type: `String`
 Default value: `'_'`
 
 The values keyed by property names that begin with this prefix are merged into nearby data.
-See the examples above.
 Where contextualize looks for `'_context1'` in the examples, a value of `'$'` for `options.prefix` would
-cause it to look for `'$context1'` instead, etc.
+cause it to look for `'$context1'` instead.
+
+`'.'` or `':'` would be nice prefix values, but using them would require you to quote your property names;
+e.g. `{':context1': ...}` instead of `{_context1: ...}`.
+Also, '`_`' has the feature that grunt ignores it when used at the top level of a multitask configuration,
+where it could otherwise be mistaken for the name of a multitask target.
 
 #### options.verbose
 Type: `boolean`
