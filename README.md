@@ -1,5 +1,9 @@
 # grunt-contextualize
 
+[![NPM version](https://badge.fury.io/js/grunt-contextualize.png)](http://badge.fury.io/js/grunt-contextualize)
+[![Build Status](https://api.travis-ci.org/osteele/grunt-contextualize.png?branch-master)](https://api.travis-ci.org/osteele/grunt-contextualize.png?branch-master)
+[![Build Status](https://david-dm.org/osteele/grunt-contextualize.png)](https://david-dm.org/osteele/grunt-contextualize.png)
+
 This plugin overrides configuration properties based on the current context,
  in order to re-use a single set of plugin targets for multiple contexts.
 
