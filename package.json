@@ -26,13 +26,17 @@
     "node": ">= 0.8.0"
   },
   "scripts": {
+    "prepublish": "coffee -bcm tasks",
+    "clean": "rm -f tasks/*.{js,map}",
     "test": "grunt test"
   },
   "dependencies": {
-    "coffee-script": ">=1.6.3"
   },
   "devDependencies": {
-    "grunt": "~0.4.2",
+    "coffee-script": ">=1.6.3",
+    "grunt": ">0.4.2",
+    "coffee-script": ">=1.7.1",
+    "grunt": ">=0.4.2",
     "grunt-coffeelint": "0.0.8",
     "grunt-contrib-nodeunit": "~0.3.0",
     "load-grunt-tasks": "~0.3.0",
@@ -40,9 +44,13 @@
     "grunt-cli": "~0.1.13"
   },
   "peerDependencies": {
-    "grunt": "~0.4.2"
+    "grunt": ">=0.4.2"
   },
   "keywords": [
     "gruntplugin"
+  ],
+  "files": [
+    "tasks",
+    "LICENSE-MIT"
   ]
 }
