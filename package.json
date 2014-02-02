@@ -26,9 +26,10 @@
     "node": ">= 0.8.0"
   },
   "scripts": {
-    "prepublish": "coffee -bcm tasks",
+    "build": "coffee -o tasks --bare --compile --map src",
+    "prepublish": "npm run build",
     "clean": "rm -f tasks/*.{js,map}",
-    "test": "grunt test"
+    "test": "npm run build && grunt test"
   },
   "dependencies": {
   },
