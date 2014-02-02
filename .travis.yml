@@ -1,3 +1,12 @@
 language: node_js
 node_js:
-  - "0.10"
+- '0.10'
+deploy:
+  provider: npm
+  email: steele@osteele
+  api_key:
+    secure: aAstOk4iQH8CPx3j0iyK8KhGuRYq/w1AEANCmleRygQYD7pXsxXJsQruLL0XH+BYOgMmsgaN+yhJzsKUHJio8SVo4/wUtqRRz3P90imRCSSfx6ga4vPQ3ydzlMhHmjUgFK6ezHGxXpV3pjyhpUabkdxMIxqIpyfn27CcqyhwBDc=
+  on:
+    branch: master
+    tags: true
+  skip_cleanup: true
